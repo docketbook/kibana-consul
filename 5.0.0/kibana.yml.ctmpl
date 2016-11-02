@@ -1,0 +1,18 @@
+{{$serviceName := env "CONSUL_SERVICE"}}
+{{$services := service $serviceName}}
+{{$lenServices := len $services}}
+{{$key := env "CONSUL_KVKEY" }}
+{{$config := key $key | parseJSON}}
+{{if $config.elasticsearchHost}}
+elasticsearch.url: "http://{{$config.elasticsearchHost}}:9200"
+{{else if gt $lenServices 0}}
+{{$endpoint := index $services 0 }}
+elasticsearch.url: "http://{{$endpoint.Address}}:9200"
+{{else}}
+elasticsearch.url: "http://elasticsearch:9200"
+{{end}}
+kibana.index: "{{if $config.kibanaIndex}}{{$config.kibanaIndex}}{{else}}.kinana{{end}}"
+kibana.defaultAppId: "{{if $config.kibanaIndex}}{{$config.kibanaIndex}}{{else}}discovery{{end}}"
+pid.file: /var/run/kibana/kibana.pid
+server.host: "0.0.0.0"
+server.port: 5601
