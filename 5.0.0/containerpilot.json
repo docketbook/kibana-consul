@@ -27,6 +27,7 @@
             "-config-dir=/var/consul/config",
             "-rejoin",
             "-retry-join", "{{ .CONSUL_ADDRESS }}",
+            "-datacenter", "{{ if .CONSUL_DC }}{{ .CONSUL_DC }}{{ else }}dc1{{ end }}",
             "-retry-max", "10",
             "-retry-interval", "10s"
         ],
